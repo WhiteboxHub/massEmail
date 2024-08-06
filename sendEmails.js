@@ -14,8 +14,8 @@
 //     });
 
 //     const [rows] = await connection.execute(`
-//         SELECT email, remove 
-//         FROM massemail 
+//         SELECT email, remove
+//         FROM massemail
 //     `);
 
 //     await connection.end();
@@ -65,11 +65,6 @@
 
 // main();
 
-
-
-
-
-
 // working :
 
 // require('dotenv').config();
@@ -88,8 +83,8 @@
 //     });
 
 //     const [rows] = await connection.execute(`
-//         SELECT email, remove 
-//         FROM massemail 
+//         SELECT email, remove
+//         FROM massemail
 //     `);
 
 //     await connection.end();
@@ -150,16 +145,6 @@
 
 // main();
 
-
-
-
-
-
-
-
-
-
-
 // this one is working
 
 // require('dotenv').config();
@@ -179,8 +164,8 @@
 //     });
 
 //     const [rows] = await connection.execute(`
-//         SELECT email, remove 
-//         FROM massemail 
+//         SELECT email, remove
+//         FROM massemail
 //     `);
 
 //     await connection.end();
@@ -215,7 +200,7 @@
 //         from: 'srikanthprabha62@gmail.com',
 //         to ,
 //         subject,
-        
+
 //     };
 
 //     try {
@@ -257,7 +242,6 @@
 
 // main();
 
-
 // // // output is :
 // // Skipped email address with invalid domain: golubts@-2000.com
 // // Email sent to: a.guitart@01direct.com
@@ -266,7 +250,7 @@
 // // Skipped email address with invalid domain: tom@111aldo.com
 // // Email sent to: ivank@1199nbf.org
 // // Skipped email address with invalid domain: vijay@128soft.com
-// // Skipped email address with invalid domain: vani@128soft.com 
+// // Skipped email address with invalid domain: vani@128soft.com
 // // Skipped email address with invalid domain: bala@128soft.com
 // // Email sent to: careers@1800flowers.com
 // // Skipped email address with invalid domain: recruiter4@1800tek.com
@@ -277,19 +261,6 @@
 // // Email sent to: lcole@1highstreet.com
 // // Skipped email address with invalid domain: carol@1ktv.com
 // // Email sent to: monica@1sourcestaffing.com
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // require('dotenv').config();
 // const mysql = require('mysql');
@@ -347,24 +318,6 @@
 //     });
 // });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // require('dotenv').config();
 // const mysql = require('mysql2/promise');
 // const nodemailer = require('nodemailer');
@@ -383,8 +336,8 @@
 //     });
 
 //     const [rows] = await connection.execute(`
-//         SELECT email, remove 
-//         FROM massemail 
+//         SELECT email, remove
+//         FROM massemail
 //     `);
 
 //     await connection.end();
@@ -461,112 +414,118 @@
 
 // main();
 
+require("dotenv").config();
+const mysql = require("mysql2/promise");
+const nodemailer = require("nodemailer");
+const dns = require("dns");
+const htmlTemplate = require("./HtmlTemplet"); // Ensure this file exists and exports the correct HTML template
 
-
-
-
-
-
-
-
-
-require('dotenv').config();
-const mysql = require('mysql2/promise');
-const nodemailer = require('nodemailer');
-const dns = require('dns');
-const htmlTemplate = require('./HtmlTemplet'); // Ensure this file exists and exports the correct HTML template
-
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT, EMAIL_USER, EMAIL_PASS } = process.env;
+const {
+  DB_HOST,
+  DB_USER,
+  DB_PASSWORD,
+  DB_NAME,
+  DB_PORT,
+  EMAIL_USER,
+  EMAIL_PASS,
+} = process.env;
 
 // Function to get the first 100 email entries from the database
 async function getEmails() {
-    const connection = await mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_NAME,
-        port: DB_PORT,
-    });
+  const connection = await mysql.createConnection({
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    port: DB_PORT,
+  });
 
-    // Query to select the first 100 emails in descending order
-    const [rows] = await connection.execute(`
+  // Query to select the first 100 emails in descending order
+  const [rows] = await connection.execute(`
         SELECT email, remove 
         FROM whiteboxqa.massemail 
         ORDER BY id DESC
         LIMIT 100
     `);
 
-    await connection.end();
-    return rows;
+  await connection.end();
+  return rows;
 }
 
 // Function to validate email addresses
 function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
 
 // Function to check if the domain of an email has MX records
 async function isDomainValid(domain) {
-    return new Promise((resolve) => {
-        dns.resolveMx(domain, (err) => {
-            resolve(!err); // Resolve true if no error, indicating domain is valid
-        });
+  return new Promise((resolve) => {
+    dns.resolveMx(domain, (err) => {
+      resolve(!err); // Resolve true if no error, indicating domain is valid
     });
+  });
 }
 
 // Function to send an email
 async function sendEmail(to, subject, html) {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: EMAIL_USER,
-            pass: EMAIL_PASS, // Use your generated App password here
-        },
-    });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: EMAIL_USER,
+      pass: EMAIL_PASS, // Use your generated App password here
+    },
+  });
 
-    const mailOptions = {
-        from: EMAIL_USER,
-        to,
-        subject,
-        html,
-    };
+  const mailOptions = {
+    from: EMAIL_USER,
+    to,
+    subject,
+    html,
+  };
 
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log(`Email sent to: ${to}`);
-    } catch (error) {
-        console.error(`Error sending email to ${to}:`, error);
-    }
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Email sent to: ${to}`);
+  } catch (error) {
+    console.error(`Error sending email to ${to}:`, error);
+  }
 }
 
 // Main function to process and send emails
 async function main() {
-    try {
-        const emails = await getEmails();
+  try {
+    const emails = await getEmails();
 
-        for (const { email, remove } of emails) {
-            if (remove === 'Y') {
-                if (!isValidEmail(email)) {
-                    console.log(`Skipped invalid email address: ${email}`);
-                    continue; // Skip to the next email
-                }
-
-                const domain = email.split('@')[1];
-                if (!(await isDomainValid(domain))) {
-                    console.log(`Skipped email address with invalid domain: ${email}`);
-                    continue; // Skip to the next email
-                }
-
-                const subject = 'Updated List of Machine Learning Engineer, UI and QA Candidates Available for W2, C2C, Full-Time, 1099, and C2H Opportunities';
-                const html = htmlTemplate; // Assuming htmlTemplate is a string of HTML content
-                const html1=
-                await sendEmail(email, subject, html);
-            }
+    for (const { email, remove } of emails) {
+      if (remove === "N") {
+        if (!isValidEmail(email)) {
+          console.log(`Skipped invalid email address: ${email}`);
+          continue; // Skip to the next email
         }
-    } catch (error) {
-        console.error('Error:', error);
+
+        const domain = email.split("@")[1];
+        if (!(await isDomainValid(domain))) {
+          console.log(`Skipped email address with invalid domain: ${email}`);
+          continue; // Skip to the next email
+        }
+
+        const unsubscribeLink = `https://localhost:3000/unsubscribe?email=${encodeURIComponent(
+          email
+        )}`;
+        const html = `${htmlTemplate}<br><br><a href="${unsubscribeLink}">Unsubscribe</a>`;
+
+        const subject =
+          "Updated List of Machine Learning Engineer, UI and QA Candidates Available for W2, C2C, Full-Time, 1099, and C2H Opportunities";
+        await sendEmail(email, subject, html);
+
+        // Add a delay to avoid hitting rate limits
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
+      }
     }
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
 
 // Call the main function to start the process

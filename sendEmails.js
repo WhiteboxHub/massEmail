@@ -1,8 +1,8 @@
-require('dotenv').config();
-const mysql = require('mysql2/promise');
-const nodemailer = require('nodemailer');
-const dns = require('dns');
-const htmlTemplate = require('./HtmlTemplet'); // Ensure this file exists and exports the correct HTML template
+require("dotenv").config();
+const mysql = require("mysql2/promise");
+const nodemailer = require("nodemailer");
+const dns = require("dns");
+const htmlTemplate = require("./HtmlTemplet"); // Ensure this file exists and exports the correct HTML template
 
 const {
   DB_HOST,
@@ -118,7 +118,7 @@ async function main() {
           continue; // Skip to the next email
         }
 
-        const unsubscribeLink = `http://localhost:3000/unsubscribe?email=${encodeURIComponent(
+        const unsubscribeLink = `https://whitebox-learning.com/unsubscribe?email=${encodeURIComponent(
           email
         )}`;
         const html = `${htmlTemplate}<br><br><a href="${unsubscribeLink}">Unsubscribe</a>`;

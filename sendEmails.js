@@ -1,8 +1,8 @@
-require('dotenv').config();
-const mysql = require('mysql2/promise');
-const nodemailer = require('nodemailer');
-const dns = require('dns');
-const htmlTemplate = require('./HtmlTemplet'); // Ensure this file exists and exports the correct HTML template
+require("dotenv").config();
+const mysql = require("mysql2/promise");
+const nodemailer = require("nodemailer");
+const dns = require("dns");
+const htmlTemplate = require("./HtmlTemplet"); // Ensure this file exists and exports the correct HTML template
 
 const {
   DB_HOST,
@@ -13,6 +13,9 @@ const {
   EMAIL_USER,
   EMAIL_PASS,
 } = process.env;
+
+let emailSentCount = 0;
+let emailSkippedCount = 0;
 
 // Function to get the first 100 email entries from the database
 async function getEmails() {
@@ -51,6 +54,28 @@ async function isDomainValid(domain) {
   });
 }
 
+// Function to update email status in the database
+async function updateEmailStatus(email) {
+  const connection = await mysql.createConnection({
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    port: DB_PORT,
+  });
+
+  // Query to update the email status
+  await connection.execute(
+    `
+    UPDATE whiteboxqa.massemail 
+    SET remove = 'Y' 
+    WHERE email = ?`,
+    [email]
+  );
+
+  await connection.end();
+}
+
 // Function to send an email
 async function sendEmail(to, subject, html) {
   const transporter = nodemailer.createTransport({
@@ -70,6 +95,7 @@ async function sendEmail(to, subject, html) {
 
   try {
     await transporter.sendMail(mailOptions);
+    emailSentCount++;
     console.log(`Email sent to: ${to}`);
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
@@ -85,16 +111,20 @@ async function main() {
       if (remove === "N") {
         if (!isValidEmail(email)) {
           console.log(`Skipped invalid email address: ${email}`);
+          await updateEmailStatus(email); // Update status for invalid email
+          emailSkippedCount++;
           continue; // Skip to the next email
         }
 
         const domain = email.split("@")[1];
         if (!(await isDomainValid(domain))) {
           console.log(`Skipped email address with invalid domain: ${email}`);
+          await updateEmailStatus(email); // Update status for invalid domain
+          emailSkippedCount++;
           continue; // Skip to the next email
         }
 
-        const unsubscribeLink = `https://localhost:3000/unsubscribe?email=${encodeURIComponent(
+        const unsubscribeLink = `https://whitebox-learning.com/unsubscribe?email=${encodeURIComponent(
           email
         )}`;
         const html = `${htmlTemplate}<br><br><a href="${unsubscribeLink}">Unsubscribe</a>`;
@@ -105,8 +135,17 @@ async function main() {
 
         // Add a delay to avoid hitting rate limits
         await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
+      } else {
+        console.log(
+          `Skipped email address: ${email} because they unsubscribed`
+        );
+        emailSkippedCount++;
       }
     }
+
+    // Log final counts
+    console.log(`Total emails sent: ${emailSentCount}`);
+    console.log(`Total emails skipped: ${emailSkippedCount}`);
   } catch (error) {
     console.error("Error:", error);
   }

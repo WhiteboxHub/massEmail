@@ -3,9 +3,9 @@ const  htmltemplet = `
 <p>I hope this email finds you well!</p>
     <p>I’m reaching out to share our updated list of top-tier candidates in <strong style="color: darkblue;">Machine Learning Engineering, UI,</strong> and <strong style="color: darkblue;">QA</strong> who are available for immediate placement. They are ready for <strong style="color: darkblue;">W2, C2C, Full-Time, 1099, and C2H opportunities</strong>. You’ll find the detailed list attached for your review.</p>
     <p>Additionally, our candidates do not require visa sponsorship as they hold <strong style="color: darkblue;">USC, GC, and H4 EAD statuses</strong>.</p>
-    <p>If any of these profiles align with your current needs, please don’t hesitate to reach out. Additionally, I would appreciate it if you could add my email to your daily distribution list: <a href="mailto:david@innova-path.com"><strong style="color: darkblue;">david@innova-path.com</strong></a>. Feel free to call me at <strong style="color: darkblue;">+1(925)621-8610 or +91 7993041323 </strong> for any further discussions.</p>
+    <p>If any of these profiles align with your current needs, please don’t hesitate to reach out. Additionally, I would appreciate it if you could add my email to your daily distribution list: <a href="mailto:kevin@innova-path.com"><strong style="color: darkblue;">kevin@innova-path.com</strong></a>. Feel free to call me at <strong style="color: darkblue;">925-465-2222,  and +91 912-165-0376(Whatsapp)  and +91 966-623-3827(Whatsapp)  </strong> for any further discussions.</p>
     <p>Looking forward to the opportunity to work together!</p>
-    <p>Best regards,<br>David</p>
+    <p>Best regards,<br>kevin</p>
     <html>
 <head>
     <meta charset="UTF-8">

@@ -112,7 +112,10 @@ async function main() {
         if (!isValidEmail(email)) {
           console.log(`Skipped invalid email address: ${email}`);
           await updateEmailStatus(email); // Update status for invalid email
+<<<<<<< HEAD
           emailSkippedCount++;
+=======
+>>>>>>> a0e7ac47b1049c2efc94c588232ec42412a19715
           continue; // Skip to the next email
         }
 
@@ -120,7 +123,10 @@ async function main() {
         if (!(await isDomainValid(domain))) {
           console.log(`Skipped email address with invalid domain: ${email}`);
           await updateEmailStatus(email); // Update status for invalid domain
+<<<<<<< HEAD
           emailSkippedCount++;
+=======
+>>>>>>> a0e7ac47b1049c2efc94c588232ec42412a19715
           continue; // Skip to the next email
         }
 
@@ -139,7 +145,10 @@ async function main() {
         console.log(
           `Skipped email address: ${email} because they unsubscribed`
         );
+<<<<<<< HEAD
         emailSkippedCount++;
+=======
+>>>>>>> a0e7ac47b1049c2efc94c588232ec42412a19715
       }
     }
 

@@ -2,7 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql2/promise");
 const nodemailer = require("nodemailer");
 const dns = require("dns");
-const htmlTemplate = require("./HtmlTemplet"); // Ensure this file exists and exports the correct HTML template
+const htmlTemplate = require("./HtmlTemplet");
 
 const {
   DB_HOST,
@@ -17,7 +17,6 @@ const {
 let emailSentCount = 0;
 let emailSkippedCount = 0;
 
-// Function to get the first 100 email entries from the database
 async function getEmails() {
   const connection = await mysql.createConnection({
     host: DB_HOST,
@@ -27,7 +26,6 @@ async function getEmails() {
     port: DB_PORT,
   });
 
-  // Query to select the first 100 emails in descending order
   const [rows] = await connection.execute(`
         SELECT email, remove 
         FROM whiteboxqa.massemail 
